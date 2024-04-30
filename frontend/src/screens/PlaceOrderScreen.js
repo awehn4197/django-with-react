@@ -6,31 +6,37 @@ import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { createOrder } from '../actions/orderActions'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
 
 
     const cart = useSelector(state => state.cart)
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2)
-        cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
-        cart.taxPrice = ((0.082) * cart.itemsPrice).toFixed(2)
-        cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
-    }, [cart])
+        if (!cart.paymentMethod) {
+            navigate('/payment')
+        }
+    }, [navigate, cart, dispatch])
+
+    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2)
+    cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
+    cart.taxPrice = ((0.082) * cart.itemsPrice).toFixed(2)
+    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
     const orderCreate = useSelector(state => state.orderCreate)
     const { order, success, error } = orderCreate
 
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (success) {
             navigate(`/order/${order._id}`)
+            dispatch({ type: ORDER_CREATE_RESET })
         }
-    }, [success, navigate, order])
-
-    const dispatch = useDispatch()
+    }, [success, navigate, order, dispatch])
 
     const placeOrder = () => {
         dispatch(createOrder({
@@ -127,6 +133,9 @@ function PlaceOrderScreen() {
                                     <Col>Total:</Col>
                                     <Col>${cart.totalPrice}</Col>
                                 </Row>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                {error && <Message variant="danger">{error}</Message>}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Button
