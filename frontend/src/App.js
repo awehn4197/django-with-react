@@ -13,6 +13,10 @@ import ShippingScreen from './screens/ShippingScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen'
+import UserListScreen from './screens/UserListScreen';
+import EditUserScreen from './screens/EditUserScreen';
+import ProductListScreen from './screens/ProductListScreen';
+import ProductEditScreen from './screens/ProductEditScreen'
 
 
 const router = createBrowserRouter([
@@ -30,6 +34,11 @@ const router = createBrowserRouter([
             { path: '/payment', element: <PaymentScreen />},
             { path: '/placeorder', element: <PlaceOrderScreen />},
             { path: 'order/:id', element: <OrderScreen /> },
+            { path: '/admin/userlist', element: <UserListScreen /> },
+            { path: '/admin/user/:id/edit', element: <EditUserScreen />},
+            { path: '/admin/productlist', element: <ProductListScreen /> },
+            { path: '/admin/product/:id/edit', element: <ProductEditScreen /> },
+
 
         ],
     },
